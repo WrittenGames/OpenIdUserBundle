@@ -1,0 +1,21 @@
+{
+    "name": "writtengames/openid-user-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony WGOpenIdUserBundle",
+    "keywords": ["FOSUserBundle", "FpOpenIdBundle"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Moritz Kraft",
+            "email": "mo@writtengames.com"
+        }
+    ],
+    "require": {
+        "friendsofsymfony/user-bundle": "*",
+        "fp/openid-bundle": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "WG\\OpenIdUserBundle": "" }
+    },
+    "target-dir": "WG/OpenIdUserBundle"
+}

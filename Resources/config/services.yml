@@ -1,0 +1,6 @@
+services:
+    wg.openid.user_manager:
+        class:  WG\OpenIdUserBundle\Model\UserManager
+        arguments:
+            - '@fp_openid.identity_manager'
+            - '@doctrine.orm.entity_manager'

@@ -1,0 +1,10 @@
+{% block fp_openid_content %}
+    {% if error %}
+        <div>{{ error }}</div>
+    {% endif %}
+
+    <form id="fp_openid_login" action="{{ path("fp_openid_security_check") }}" method="post">
+        <input type="hidden" id="openid_identifier" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
+        <input type="submit" id="_submit" name="_submit" value="Login using Google" />
+    </form>
+{% endblock fp_openid_content %}
