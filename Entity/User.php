@@ -5,14 +5,15 @@ namespace WG\OpenIdUserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 use FOS\UserBundle\Entity\User as BaseUser;
-
-use Fp\OpenIdBundle\Model\UserIdentityInterface;
+use FOS\UserBundle\Model\GroupInterface;
+use FOS\UserBundle\Model\GroupableInterface;
+use FOS\UserBundle\Model\UserInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="openid__user")
+ * @ORM\Table(name="openiduser__user")
  */
-class User extends BaseUser
+class User implements UserInterface, GroupableInterface
 {
     /**
      * @ORM\Id
@@ -20,19 +21,83 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $username;
+    
+    /**
+     * @ORM\Column(name="username_canonical",type="string")
+     */
+    protected $usernameCanonical;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $email;
+    
+    /**
+     * @ORM\Column(name="email_canonical",type="string")
+     */
+    protected $emailCanonical;
+    
+    /**
+     * @ORM\Column(type="array")
+     */
+    protected $roles;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $enabled;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $locked;
+    
+    /**
+     * @ORM\Column(name="last_login",type="datetime")
+     */
+    protected $lastLogin;
+    
+    /**
+     * @ORM\Column(name="created_at",type="datetime")
+     */
+    protected $createdAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Pbem\OrganisationBundle\Entity\Organisation")
-     * @ORM\JoinTable(name="pbem__organisation_member",
-     *      joinColumns={@ORM\JoinColumn(name="member_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="organisation_id", referencedColumnName="id")}
+     * @ORM\ManyToMany(targetEntity="WG\OpenIdUserBundle\Entity\Group")
+     * @ORM\JoinTable(name="openiduser__user_group",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      * )
      */
-    protected $organisations;
+    protected $groups;
     
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        parent::__construct();
+        $this->enabled = false;
+        $this->locked = false;
+        $this->roles = array();
+    }
+
+    /**
+     * Tells if the the given user is this user.
+     *
+     * Useful when not hydrating all fields.
+     *
+     * @param UserInterface $user
+     *
+     * @return Boolean
+     */
+    public function isUser( UserInterface $user = null )
+    {
+        return $this->getId() == $user->getId();
     }
 
     /**
@@ -46,35 +111,477 @@ class User extends BaseUser
     }
 
     /**
-     * Add organisations
+     * Set id
      *
-     * @param Pbem\OrganisationBundle\Entity\Organisation $organisations
-     * @return Member
+     * @param integer $id
      */
-    public function addOrganisation(\Pbem\OrganisationBundle\Entity\Organisation $organisations)
+    public function setId( $id )
     {
-        $this->organisations[] = $organisations;
-    
+        $this->id = $id;
+    }
+
+    /**
+     * Sets the username.
+     *
+     * @param string $username
+     */
+    public function setUsername( $username )
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * Gets the username.
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Gets the canonical username in search and sort queries.
+     *
+     * @return string
+     */
+    public function getUsernameCanonical()
+    {
+        return $this->usernameCanonical;
+    }
+
+    /**
+     * Sets the canonical username.
+     *
+     * @param string $usernameCanonical
+     */
+    public function setUsernameCanonical( $usernameCanonical )
+    {
+        $this->usernameCanonical = $usernameCanonical;
+    }
+
+    /**
+     * Gets email.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Sets the email.
+     *
+     * @param string $email
+     */
+    public function setEmail( $email )
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * Gets the canonical email in search and sort queries.
+     *
+     * @return string
+     */
+    public function getEmailCanonical()
+    {
+        return $this->emailCanonical;
+    }
+
+    /**
+     * Set the canonical email.
+     *
+     * @param string $emailCanonical
+     */
+    public function setEmailCanonical( $emailCanonical )
+    {
+        $this->emailCanonical = $emailCanonical;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean 
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Checks whether the user is enabled.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a DisabledException and prevent login.
+     *
+     * @return Boolean true if the user is enabled, false otherwise
+     *
+     * @see DisabledException
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param Boolean $enable
+     */
+    public function setEnabled( $enable )
+    {
+        $this->enabled = $enable;
+    }
+
+    /**
+     * Get locked
+     *
+     * @return boolean 
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Sets the locking status of the user.
+     *
+     * @param Boolean $lock
+     */
+    public function setLocked( $lock )
+    {
+        $this->lock = $lock;
+    }
+
+    /**
+     * Get lastLogin
+     *
+     * @return \DateTime 
+     */
+    public function getLastLogin()
+    {
+        return $this->lastLogin;
+    }
+
+    /**
+     * Sets the last login time
+     *
+     * @param \DateTime $time
+     */
+    public function setLastLogin( \DateTime $time )
+    {
+        $this->lastLogin = $time;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Sets the creation time
+     *
+     * @param \DateTime $time
+     */
+    public function setCreatedAt( \DateTime $time )
+    {
+        $this->createdAt = $time;
+    }
+
+    /**
+     * Tells if the the given user has the super admin role.
+     *
+     * @return Boolean
+     */
+    public function isSuperAdmin()
+    {
+        return $this->hasRole( UserInterface::ROLE_SUPER_ADMIN );
+    }
+
+    /**
+     * Sets the super admin status
+     *
+     * @param Boolean $setSuperAdmin
+     */
+    public function setSuperAdmin( $setSuperAdmin )
+    {
+        if ( $setSuperAdmin )
+        {
+            $this->addRole( UserInterface::ROLE_SUPER_ADMIN );
+        }
+        else
+        {
+            $this->removeRole( UserInterface::ROLE_SUPER_ADMIN );
+        }
+    }
+
+    /**
+     * Never use this to check if this user has access to anything!
+     *
+     * Use the SecurityContext, or an implementation of AccessDecisionManager
+     * instead, e.g.
+     *
+     *         $securityContext->isGranted('ROLE_USER');
+     *
+     * @param string $role
+     *
+     * @return Boolean
+     */
+    public function hasRole( $role )
+    {
+        return in_array(strtoupper($role), $this->roles, true);
+    }
+
+    /**
+     * Sets the roles of the user.
+     *
+     * This overwrites any previous roles.
+     *
+     * @param array $roles
+     */
+    public function setRoles( array $roles )
+    {
+        $this->roles = $roles;
+    }
+
+    /**
+     * Adds a role to the user.
+     *
+     * @param string $role
+     */
+    public function addRole( $role )
+    {
+        if ( !$this->hasRole( $role ) )
+        {
+            $this->roles[] = strtoupper( $role );
+        }
+
         return $this;
     }
 
     /**
-     * Remove organisations
+     * Removes a role to the user.
      *
-     * @param Pbem\OrganisationBundle\Entity\Organisation $organisations
+     * @param string $role
      */
-    public function removeOrganisation(\Pbem\OrganisationBundle\Entity\Organisation $organisations)
+    public function removeRole( $role )
     {
-        $this->organisations->removeElement($organisations);
+        if ( false !== $key = array_search(strtoupper( $role ), $this->roles, true ) )
+        {
+            unset( $this->roles[$key] );
+            $this->roles = array_values( $this->roles );
+        }
+        return $this;
     }
 
     /**
-     * Get organisations
+     * Returns the roles of the user.
+     *
+     * @param string $role
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * Add groups
+     *
+     * @param WG\OpenIdUserBundle\Entity\Group $groups
+     * @return User
+     */
+    public function addGroup( GroupInterface $groups )
+    {
+        $this->groups[] = $groups;
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param WG\OpenIdUserBundle\Entity\Group $groups
+     */
+    public function removeGroup( GroupInterface $groups )
+    {
+        $this->groups->removeElement( $groups );
+    }
+
+    /**
+     * Get groups
      *
      * @return Doctrine\Common\Collections\Collection 
      */
-    public function getOrganisations()
+    public function getGroups()
     {
-        return $this->organisations;
+        return $this->groups;
     }
+    
+    /**
+     * Gets the name of the groups which includes the user.
+     *
+     * @return array
+     */
+    public function getGroupNames()
+    {
+        $names = array();
+        foreach ( $this->groups as $group ) $names[] = $group->getName();
+        return $names;
+    }
+
+    /**
+     * Indicates whether the user belongs to the specified group or not.
+     *
+     * @param string $name Name of the group
+     *
+     * @return Boolean
+     */
+    public function hasGroup( $name )
+    {
+        return in_array( $name, $this->getGroupNames() );
+    }
+
+    /**
+     * Serializes the user.
+     *
+     * The serialized data have to contain the fields used by the equals method and the username.
+     *
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->usernameCanonical,
+            $this->username,
+            $this->emailCanonical,
+            $this->email,
+            $this->locked,
+            $this->enabled,
+            $this->roles,
+        ));
+    }
+
+    /**
+     * Unserializes the user.
+     *
+     * @param string $serialized
+     */
+    public function unserialize($serialized)
+    {
+        $data = unserialize($serialized);
+        // add a few extra elements in the array to ensure that we have enough keys when unserializing
+        // older data which does not include all properties.
+        $data = array_merge($data, array_fill(0, 2, null));
+
+        list(
+            $this->id,
+            $this->usernameCanonical,
+            $this->username,
+            $this->emailCanonical,
+            $this->email,
+            $this->locked,
+            $this->enabled,
+            $this->roles
+        ) = $data;
+    }
+    
+    /**
+     * Checks whether the user's account has expired.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw an AccountExpiredException and prevent login.
+     *
+     * @return Boolean true if the user's account is non expired, false otherwise
+     *
+     * @see AccountExpiredException
+     */
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user is locked.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a LockedException and prevent login.
+     *
+     * @return Boolean true if the user is not locked, false otherwise
+     *
+     * @see LockedException
+     */
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user's credentials (password) has expired.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a CredentialsExpiredException and prevent login.
+     *
+     * @return Boolean true if the user's credentials are non expired, false otherwise
+     *
+     * @see CredentialsExpiredException
+     */
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * Not implemented
+     */
+    public function eraseCredentials(){}
+
+    /**
+     * Not implemented
+     */
+    public function getPlainPassword(){}
+
+    /**
+     * Not implemented
+     */
+    public function setPlainPassword($password){}
+
+    /**
+     * Not implemented
+     */
+    public function getPassword(){}
+
+    /**
+     * Not implemented
+     */
+    public function setPassword($password){}
+
+    /**
+     * Not implemented
+     */
+    public function getSalt(){}
+
+    /**
+     * Not implemented
+     */
+    public function getConfirmationToken(){}
+
+    /**
+     * Not implemented
+     */
+    public function setConfirmationToken($confirmationToken){}
+
+    /**
+     * Not implemented
+     */
+    public function setPasswordRequestedAt(\DateTime $date = null){}
+
+    /**
+     * Not implemented
+     */
+    public function isPasswordRequestNonExpired($ttl){}
 }

@@ -4,3 +4,4 @@ services:
         arguments:
             - '@fp_openid.identity_manager'
             - '@doctrine.orm.entity_manager'
+            - '@fos_user.util.canonicalizer.default'

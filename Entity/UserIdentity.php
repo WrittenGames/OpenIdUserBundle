@@ -7,11 +7,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 use Fp\OpenIdBundle\Entity\UserIdentity as BaseUserIdentity;
-use Fp\OpenIdBundle\Model\UserIdentityInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="openid__identity")
+ * @ORM\Table(name="openiduser__identity")
  */
 class UserIdentity extends BaseUserIdentity
 {
@@ -28,7 +27,7 @@ class UserIdentity extends BaseUserIdentity
      * @var Symfony\Component\Security\Core\User\UserInterface
      *
      * @ORM\OneToOne(targetEntity="WG\OpenIdUserBundle\Entity\User")
-     * @ORM\JoinColumn(name="member_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;
 
@@ -51,20 +50,21 @@ class UserIdentity extends BaseUserIdentity
      * Set user
      *
      * @param WG\OpenIdUserBundle\Entity\User $user
-     * @return OpenIdIdentity
+     * @return UserIdentity
      */
-    public function setMember( \WG\OpenIdUserBundle\Entity\User $user = null )
+    public function setUser( UserInterface $user = null)
     {
         $this->user = $user;
-        return $user;
+    
+        return $this;
     }
 
     /**
      * Get user
      *
-     * @return WG\OpenIdUserBundle\Entity\User
+     * @return WG\OpenIdUserBundle\Entity\User 
      */
-    public function getMember()
+    public function getUser()
     {
         return $this->user;
     }

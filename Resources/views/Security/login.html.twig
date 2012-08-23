@@ -1,3 +1,6 @@
+
+{% extends 'WGOpenIdUserBundle::base.html.twig' %}
+
 {% block fp_openid_content %}
     {% if error %}
         <div>{{ error }}</div>
@@ -7,4 +10,7 @@
         <input type="hidden" id="openid_identifier" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
         <input type="submit" id="_submit" name="_submit" value="Login using Google" />
     </form>
+
+    [ <a href="/app_dev.php/">home</a> ]
+
 {% endblock fp_openid_content %}
