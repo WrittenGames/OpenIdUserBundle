@@ -2,7 +2,7 @@ WGOpenIdUserBundle
 ==================
 
 The WGOpenIdUserBundle combines the FOSUserBundle with the FpOpenIdBundle.
-It can be pretty much dropped in and made work without much configuration.
+It can be pretty much dropped in and it works without much configuration.
 
 It provides 3rd party authentication via OpenID, and uses the user and group
 management provided by the FOSUserBundle.
