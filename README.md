@@ -23,7 +23,7 @@ file in this bundle:
 Installation
 ------------
 
-All the installation instructions are located in [documentation](https://github.com/WrittenGames/OpenIdUserBundle/blob/master/Resources/doc/index.md).
+All the installation instructions are located in the [documentation](https://github.com/WrittenGames/OpenIdUserBundle/blob/master/Resources/doc/index.md).
 
 License
 -------
