@@ -18,11 +18,6 @@ class Group extends BaseGroup
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-    
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Get id

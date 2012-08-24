@@ -28,19 +28,9 @@ class User implements UserInterface, GroupableInterface
     protected $username;
     
     /**
-     * @ORM\Column(name="username_canonical",type="string")
-     */
-    protected $usernameCanonical;
-    
-    /**
      * @ORM\Column(type="string")
      */
     protected $email;
-    
-    /**
-     * @ORM\Column(name="email_canonical",type="string")
-     */
-    protected $emailCanonical;
     
     /**
      * @ORM\Column(type="array")
@@ -141,26 +131,6 @@ class User implements UserInterface, GroupableInterface
     }
 
     /**
-     * Gets the canonical username in search and sort queries.
-     *
-     * @return string
-     */
-    public function getUsernameCanonical()
-    {
-        return $this->usernameCanonical;
-    }
-
-    /**
-     * Sets the canonical username.
-     *
-     * @param string $usernameCanonical
-     */
-    public function setUsernameCanonical( $usernameCanonical )
-    {
-        $this->usernameCanonical = $usernameCanonical;
-    }
-
-    /**
      * Gets email.
      *
      * @return string
@@ -178,26 +148,6 @@ class User implements UserInterface, GroupableInterface
     public function setEmail( $email )
     {
         $this->email = $email;
-    }
-
-    /**
-     * Gets the canonical email in search and sort queries.
-     *
-     * @return string
-     */
-    public function getEmailCanonical()
-    {
-        return $this->emailCanonical;
-    }
-
-    /**
-     * Set the canonical email.
-     *
-     * @param string $emailCanonical
-     */
-    public function setEmailCanonical( $emailCanonical )
-    {
-        $this->emailCanonical = $emailCanonical;
     }
 
     /**
@@ -456,9 +406,7 @@ class User implements UserInterface, GroupableInterface
     {
         return serialize(array(
             $this->id,
-            $this->usernameCanonical,
             $this->username,
-            $this->emailCanonical,
             $this->email,
             $this->locked,
             $this->enabled,
@@ -480,9 +428,7 @@ class User implements UserInterface, GroupableInterface
 
         list(
             $this->id,
-            $this->usernameCanonical,
             $this->username,
-            $this->emailCanonical,
             $this->email,
             $this->locked,
             $this->enabled,
@@ -584,4 +530,24 @@ class User implements UserInterface, GroupableInterface
      * Not implemented
      */
     public function isPasswordRequestNonExpired($ttl){}
+
+    /**
+     * Not implemented
+     */
+    public function getUsernameCanonical(){}
+
+    /**
+     * Not implemented
+     */
+    public function setUsernameCanonical($usernameCanonical){}
+
+    /**
+     * Not implemented
+     */
+    public function getEmailCanonical(){}
+
+    /**
+     * Not implemented
+     */
+    public function setEmailCanonical($emailCanonical){}
 }

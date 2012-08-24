@@ -1,0 +1,15 @@
+
+# FOS User Bundle Configuration
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: WG\OpenIdUserBundle\Entity\User
+    service:
+        user_manager: wg.openid.user_manager
+    group:
+        group_class:  WG\OpenIdUserBundle\Entity\Group
+
+# FP OpenID Bundle Configuration
+fp_open_id:
+    db_driver: orm
+    identity_class: WG\OpenIdUserBundle\Entity\UserIdentity

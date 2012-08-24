@@ -11,7 +11,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 use FOS\UserBundle\Model\UserManagerInterface as FosUserManagerInterface;
 use FOS\UserBundle\Model\UserInterface as FosUserInterface;
-use FOS\UserBundle\Util\CanonicalizerInterface;
 
 use Fp\OpenIdBundle\Security\Core\User\UserManagerInterface as FpUserManagerInterface;
 use Fp\OpenIdBundle\Model\IdentityManagerInterface;
@@ -28,17 +27,15 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     protected $identityManager;
     protected $objectManager;
-    protected $canonicaliser;
 
     /**
      * @param IdentityManagerInterface $identityManager
      * @param ObjectManager $objectManager
      */
-    public function __construct( IdentityManagerInterface $identityManager, ObjectManager $objectManager, CanonicalizerInterface $canonicaliser )
+    public function __construct( IdentityManagerInterface $identityManager, ObjectManager $objectManager )
     {
         $this->identityManager = $identityManager;
         $this->objectManager = $objectManager;
-        $this->canonicaliser = $canonicaliser;
     }
 
     /**
@@ -134,8 +131,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
         {
             throw new AuthenticationServiceException( "I'm sorry but we do require your OpenID service provider to respond to the 'contact/email' request." );
         }
-        $user->setEmail( $attributes['contact/email'] );
-        $user->setEmailCanonical( $this->canonicaliseEmail( $attributes['contact/email'] ) );
+        $user->setEmail( strtolower( $attributes['contact/email'] ) );
         $username = isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] )
                     ?
                         ( isset( $attributes['namePerson/first'] ) ? $attributes['namePerson/first'] : '' )
@@ -146,7 +142,6 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
                         )
                     : $this->createUsernameFromEmail( $attributes['contact/email'] );
         $user->setUsername( $username );
-        $user->setUsernameCanonical( $this->canonicaliseUsername( $username ) );
         return $user;
     }
     
@@ -163,6 +158,8 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function deleteUser( FosUserInterface $user )
     {
+        $this->objectManager->remove( $user );
+        $this->objectManager->flush();
     }
 
     /**
@@ -174,6 +171,9 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUserBy( array $criteria )
     {
+        return $this->objectManager
+                    ->getRepository( 'WGOpenIdUserBundle:User' )
+                    ->findOneBy( $criteria );
     }
 
     /**
@@ -185,14 +185,9 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUserByUsername( $username )
     {
-        $usernameCanonical = $this->canonicaliseUsername( $username );
-        //die( $username . ' => ' . $usernameCanonical );
-        $user = $this->objectManager
-                     ->getRepository( 'WGOpenIdUserBundle:User' )
-                     ->findOneBy( array(
-                         'usernameCanonical' => $usernameCanonical
+        return $this->findUserBy( array(
+                         'username' => $username,
                      ));
-        return $user;
     }
 
     /**
@@ -204,9 +199,9 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUserByEmail( $email )
     {
-        return $this->objectManager
-                    ->getRepository( 'WGOpenIdUserBundle:User' )
-                    ->findOneBy( array( 'emailCanonical' => $this->canonicaliseEmail( $email ) ) );
+        return $this->findUserBy( array(
+                         'email' => $email,
+                     ));
     }
 
     /**
@@ -218,17 +213,9 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUserByUsernameOrEmail( $usernameOrEmail )
     {
-    }
-
-    /**
-     * Finds a user by its confirmationToken.
-     *
-     * @param string $token
-     *
-     * @return UserInterface or null if user does not exist
-     */
-    public function findUserByConfirmationToken( $token )
-    {
+        return false !== strpos( $usernameOrEmail, '@' )
+                ? $this->findUserByEmail( $usernameOrEmail )
+                : $this->findUserByUsername( $usernameOrEmail );
     }
 
     /**
@@ -239,15 +226,6 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
     public function findUsers()
     {
         return $this->objectManager->getRepository( 'WGOpenIdUserBundle:User' )->findAll();
-    }
-
-    /**
-     * Returns the user's fully qualified class name.
-     *
-     * @return string
-     */
-    public function getClass()
-    {
     }
 
     /**
@@ -267,49 +245,35 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function updateUser( FosUserInterface $user )
     {
+        // TODO
     }
 
     /**
-     * Updates the canonical username and email fields for a user.
+     * Returns the user's fully qualified class name.
      *
-     * @param UserInterface $user
+     * @return string
+     */
+    public function getClass()
+    {
+        // TODO
+    }
+
+    /**
+     * Not implemented
      */
     public function updateCanonicalFields( FosUserInterface $user )
     {
     }
 
     /**
-     * Updates a user password if a plain password is set.
-     *
-     * @param UserInterface $user
+     * Not implemented
      */
     public function updatePassword( FosUserInterface $user )
     {
     }
 
     /**
-     * Canonicalizes an email
-     *
-     * @param string $email
-     *
-     * @return string
+     * Not implemented
      */
-    protected function canonicaliseEmail( $email )
-    {
-        //return $this->emailCanonicalizer->canonicalize( $email );
-        return $this->canonicaliser->canonicalize( $email );
-    }
-
-    /**
-     * Canonicalizes a username
-     *
-     * @param string $username
-     *
-     * @return string
-     */
-    protected function canonicaliseUsername( $username )
-    {
-        //return $this->usernameCanonicalizer->canonicalize( $username );
-        return $this->canonicaliser->canonicalize( $username );
-    }
+    public function findUserByConfirmationToken( $token ){}
 }

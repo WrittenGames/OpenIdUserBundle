@@ -1,0 +1,10 @@
+
+{% extends 'WGOpenIdUserBundle::base.html.twig' %}
+
+{% block fos_user_content %}
+
+user profile
+<p>{{ user.username }}</p>
+<p>{{ user.email }}</p>
+
+{% endblock %}
