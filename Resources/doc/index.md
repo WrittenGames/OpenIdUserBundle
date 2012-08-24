@@ -8,7 +8,7 @@ The convenient FpOpenIdBundle.
 The amazing Doctrine ORM.
 
 Bam! Smashed together, stir fried for a bit, then left to rest on a Symfony 2.1
-project. Quick, painless, no bother at all - if the setup is what you feel like.
+project. Quick, painless, no bother at all - if the ingredients are what you feel like.
 
 If you want this bundle to be a bit more flexible, I'm accepting Pull Requests
 as of now...
@@ -158,4 +158,4 @@ $ php app/console doctrine:schema:update --force
 ### Next Steps
 
 For anything (a lot of things) not covered in this documentation, please refer
-to the documentations of the FOSUserBundle and the FpOpenIdBundle.
+to the documentation of the FOSUserBundle, the FpOpenIdBundle, and Symfony.
