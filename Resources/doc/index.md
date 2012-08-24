@@ -1,18 +1,6 @@
 Getting Started With WGOpenIdUserBundle
 =======================================
 
-The fantastic FOSUserBundle.
-
-The convenient FpOpenIdBundle.
-
-The amazing Doctrine ORM.
-
-Bam! Smashed together, stir fried for a bit, then left to rest on a Symfony 2.1
-project. Quick, painless, no bother at all - if the setup is what you feel like.
-
-If you want this bundle to be a bit more flexible, I'm accepting Pull Requests
-as of now...
-
 ## Prerequisites
 
 This version of the bundle requires Symfony 2.1.
@@ -124,6 +112,17 @@ Add the following import directive to your `config.yml`:
 
 imports:
     - { resource: "@WGOpenIdUserBundle/Resources/config/config.yml" }
+```
+
+One of the ugly little things left over from quickly whipping this up, you have
+to add the following bit in order to tell the FOSUserBundle what your firewall
+is called:
+
+``` yaml
+# app/config/config.yml
+
+fos_user:
+    firewall_name: main
 ```
 
 Or don't, and configure those two bundles yourself.
