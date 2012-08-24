@@ -14,7 +14,7 @@ If you want this bundle to be a bit more flexible, I'm accepting Pull Requests
 as of now...
 
 The WGOpenIdUserBundle combines the FOSUserBundle with the FpOpenIdBundle.
-It can be pretty much dropped in and made work without much configuration.
+It can be pretty much dropped in and it works without much configuration.
 
 It provides 3rd party authentication via OpenID, offers a user entity with
 ID, username, email address, enabled, locked, lastLogin, createdAt and roles
@@ -36,7 +36,7 @@ file in this bundle:
 Installation
 ------------
 
-All the installation instructions are located in [documentation](https://github.com/WrittenGames/OpenIdUserBundle/blob/master/Resources/doc/index.md).
+All the installation instructions are located in the [documentation](https://github.com/WrittenGames/OpenIdUserBundle/blob/master/Resources/doc/index.md).
 
 License
 -------

@@ -157,4 +157,4 @@ $ php app/console doctrine:schema:update --force
 ### Next Steps
 
 For anything (a lot of things) not covered in this documentation, please refer
-to the documentations of the FOSUserBundle and the FpOpenIdBundle.
+to the documentation of the FOSUserBundle, the FpOpenIdBundle, and Symfony.
