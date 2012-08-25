@@ -8,6 +8,6 @@ class WGOpenIdUserBundle extends Bundle
 {
     public function getParent()
     {
-        return 'FpOpenIdBundle';
+        return 'FOSUserBundle';
     }
 }

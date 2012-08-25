@@ -84,14 +84,15 @@ security:
             anonymous:  true
             logout:     true
             fp_openid:
-                login_path:                 /login_openid
+                login_path:                 /openid/login
+                check_path:                 /openid/login_check
                 create_user_if_not_exists:  true
                 provider:                   wg_user_manager
                 required_attributes:        [ namePerson/first, namePerson/last, contact/email ]
 
     access_control:
         - { path: ^/secured_area, role: ROLE_USER }
-        - { path: ^/login_openid$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/openid$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
     role_hierarchy:
@@ -135,12 +136,24 @@ import the routing directives.
 ``` yaml
 # app/config/routing.yml
 
-openiduser:
-    resource: "@WGOpenIdUserBundle/Resources/config/routing.yml"
-    prefix:   /
+openiduser_identities:
+    resource: "@WGOpenIdUserBundle/Resources/config/routing/identity.yml"
+    prefix:   /openid
+
+openiduser_users:
+    resource: "@WGOpenIdUserBundle/Resources/config/routing/user.yml"
+    prefix:   /people
+
+openiduser_groups:
+    resource: "@WGOpenIdUserBundle/Resources/config/routing/group.yml"
+    prefix:   /groups
+
+openiduser_admin:
+    resource: "@WGOpenIdUserBundle/Resources/config/routing/admin.yml"
+    prefix:   /admin
 ```
 
-Or don't, and configure the routes yourself.
+Or don't, and configure all the routes yourself. Your choice.
 
 ### Step 6: Update your database schema
 

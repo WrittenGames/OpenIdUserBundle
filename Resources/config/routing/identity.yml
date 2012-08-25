@@ -1,0 +1,12 @@
+
+fp_openid_security_login:
+    pattern:  /login
+    defaults: { _controller: WGOpenIdUserBundle:Security:login }
+
+fp_openid_security_logout:
+    pattern:  /logout
+    defaults: { _controller: FpOpenIdBundle:Security:logout }
+
+fp_openid_security_check:
+    pattern:  /login_check
+    defaults: { _controller: FpOpenIdBundle:Security:check }
