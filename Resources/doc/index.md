@@ -82,7 +82,8 @@ security:
         main:
             pattern:    ^/
             anonymous:  true
-            logout:     true
+            logout:
+                path:                       /openid/logout
             fp_openid:
                 login_path:                 /openid/login
                 check_path:                 /openid/login_check

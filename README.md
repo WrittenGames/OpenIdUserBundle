@@ -7,7 +7,7 @@ The convenient FpOpenIdBundle.
 
 The amazing Doctrine ORM.
 
-Bam! Smashed together, stir fried for a bit, then left to rest on a Symfony 2.1
+Bam! Smashed together, stir-fried for a bit, then left to simmer on a Symfony 2.1
 project. Quick, painless, no bother at all - if the setup is what you feel like.
 
 If you want this bundle to be a bit more flexible, I'm accepting Pull Requests
