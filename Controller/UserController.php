@@ -5,39 +5,22 @@ namespace WG\OpenIdUserBundle\Controller;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProfileController extends ContainerAware
 {
-    /**
-     * Show list of users
-     */
-    public function listAction()
-    {
-        $users = $this->container->get( 'doctrine' )->getRepository( 'WGOpenIdUserBundle:User' )->findAll();
-        return $this->container->get('templating')->renderResponse(
-            'WGOpenIdUserBundle:User:list.html.twig', array(
-                'users' => $users,
-        ));
-    }
-    
     /**
      * Show the user
      */
     public function showAction()
     {
-        $request = $this->container->get( 'request' );
-        $repository = $this->container->get( 'doctrine' )->getRepository( 'WGOpenIdUserBundle:User' );
-        $handle = $request->get( 'handle' );
-        $user = is_numeric( $handle )
-                ? $repository->find( $handle )
-                : $repository->findOneBy( array( 'slug' => $handle ) );
-        if ( !$user ) throw new NotFoundHttpException( "Page not found" );
-        $currentUser = $this->container->get( 'security.context' )->getToken()->getUser();
+        $user = $this->container->get( 'security.context' )->getToken()->getUser();
+        if ( !is_object( $user ) || !$user instanceof UserInterface )
+        {
+            throw new AccessDeniedException( "You don't have access to this section." );
+        }
         return $this->container->get( 'templating' )
                                ->renderResponse( 'WGOpenIdUserBundle:Profile:show.html.twig', array(
                                    'user' => $user,
-                                   'currentUser' => $currentUser,
                                ));
     }
 

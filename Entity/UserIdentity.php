@@ -26,7 +26,7 @@ class UserIdentity extends BaseUserIdentity
     /**
      * @var Symfony\Component\Security\Core\User\UserInterface
      *
-     * @ORM\OneToOne(targetEntity="WG\OpenIdUserBundle\Entity\User")
+     * @ORM\OneToOne(targetEntity="WG\OpenIdUserBundle\Entity\User", fetch="EAGER")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;

@@ -4,7 +4,8 @@ namespace WG\OpenIdUserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use FOS\UserBundle\Entity\User as BaseUser;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 use FOS\UserBundle\Model\GroupInterface;
 use FOS\UserBundle\Model\GroupableInterface;
 use FOS\UserBundle\Model\UserInterface;
@@ -26,11 +27,21 @@ class User implements UserInterface, GroupableInterface
      * @ORM\Column(type="string")
      */
     protected $username;
+    /**
+     * @Gedmo\Slug(fields={"username"})
+     * @ORM\Column(type="string")
+     */
+    protected $slug;
     
     /**
      * @ORM\Column(type="string")
      */
     protected $email;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $preferredEmail;
     
     /**
      * @ORM\Column(type="array")
@@ -53,6 +64,13 @@ class User implements UserInterface, GroupableInterface
     protected $lastLogin;
     
     /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated_at",type="datetime")
+     */
+    protected $updatedAt;
+    
+    /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at",type="datetime")
      */
     protected $createdAt;
@@ -221,26 +239,6 @@ class User implements UserInterface, GroupableInterface
     public function setLastLogin( \DateTime $time )
     {
         $this->lastLogin = $time;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime 
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Sets the creation time
-     *
-     * @param \DateTime $time
-     */
-    public function setCreatedAt( \DateTime $time )
-    {
-        $this->createdAt = $time;
     }
 
     /**
@@ -550,4 +548,96 @@ class User implements UserInterface, GroupableInterface
      * Not implemented
      */
     public function setEmailCanonical($emailCanonical){}
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return User
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set preferredEmail
+     *
+     * @param string $preferredEmail
+     * @return User
+     */
+    public function setPreferredEmail($preferredEmail)
+    {
+        $this->preferredEmail = $preferredEmail;
+    
+        return $this;
+    }
+
+    /**
+     * Get preferredEmail
+     *
+     * @return string 
+     */
+    public function getPreferredEmail()
+    {
+        return $this->preferredEmail;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     * @return User
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     * @return User
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
 }

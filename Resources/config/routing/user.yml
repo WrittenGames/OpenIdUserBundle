@@ -1,8 +1,12 @@
 
+wg_openiduser_profile_edit:
+    pattern: /{handle}/edit
+    defaults: { _controller: WGOpenIdUserBundle:Profile:edit }
+
 wg_openiduser_profile_show:
-    pattern: /profile
+    pattern: /{handle}
     defaults: { _controller: WGOpenIdUserBundle:Profile:show }
 
-wg_openiduser_profile_edit:
-    pattern: /profile/edit
-    defaults: { _controller: WGOpenIdUserBundle:Profile:edit }
+wg_openiduser_profiles:
+    pattern: /
+    defaults: { _controller: WGOpenIdUserBundle:Profile:list }

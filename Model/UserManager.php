@@ -76,7 +76,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function refreshUser( UserInterface $user )
     {
-        return $this->findUserByEmail( $user->getEmail() );
+        return $this->findUserBy( array( 'id' => $user->getId() ) );
     }
 
     /**
@@ -97,7 +97,6 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
         $user->setEnabled( true );
         $user->addRole( 'ROLE_USER' );
         $user->setLastLogin( $time );
-        $user->setCreatedAt( $time );
         $this->objectManager->persist( $user ); // Are we supposed to do that here? o.O
         $this->objectManager->flush();
         $identityModel = new UserIdentity();
@@ -132,6 +131,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
             throw new AuthenticationServiceException( "I'm sorry but we do require your OpenID service provider to respond to the 'contact/email' request." );
         }
         $user->setEmail( strtolower( $attributes['contact/email'] ) );
+        $user->setPreferredEmail( strtolower( $attributes['contact/email'] ) );
         $username = isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] )
                     ?
                         ( isset( $attributes['namePerson/first'] ) ? $attributes['namePerson/first'] : '' )
@@ -185,9 +185,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUserByUsername( $username )
     {
-        return $this->findUserBy( array(
-                         'username' => $username,
-                     ));
+        return $this->findUserBy( array( 'username' => $username ) );
     }
 
     /**
@@ -199,9 +197,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUserByEmail( $email )
     {
-        return $this->findUserBy( array(
-                         'email' => $email,
-                     ));
+        return $this->findUserBy( array( 'email' => $email ) );
     }
 
     /**
