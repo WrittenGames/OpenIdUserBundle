@@ -89,7 +89,7 @@ security:
                 check_path:                 /openid/login_check
                 create_user_if_not_exists:  true
                 provider:                   wg_user_manager
-                required_attributes:        [ namePerson/first, namePerson/last, contact/email ]
+                required_attributes:        [ contact/email, namePerson, namePerson/first, namePerson/last ]
 
     access_control:
         - { path: ^/secured_area, role: ROLE_USER }
