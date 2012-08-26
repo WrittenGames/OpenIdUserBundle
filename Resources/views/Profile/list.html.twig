@@ -1,0 +1,15 @@
+
+{% extends 'WGOpenIdUserBundle::layout.html.twig' %}
+
+{% block fos_user_content %}
+
+<h2>Users</h2>
+
+{% for user in users %}
+<div class="">
+    {{ user.username }} ({{ user.email }})
+    [<a href="{{ fullUrl( path( 'wg_openiduser_profile_show', { 'handle': user.slug } ), false ) }}">view</a>]
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -126,22 +126,22 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
     protected function createUserFromAttributes( array $attributes = array() )
     {
         $user = $this->createUser();
-        if ( !isset( $attributes['contact/email'] ) )
+        if ( isset( $attributes['contact/email'] ) )
         {
-            throw new AuthenticationServiceException( "I'm sorry but we do require your OpenID service provider to respond to the 'contact/email' request." );
+            $user->setEmail( strtolower( $attributes['contact/email'] ) );
+            $user->setRequestedEmail( strtolower( $attributes['contact/email'] ) );
         }
-        $user->setEmail( strtolower( $attributes['contact/email'] ) );
-        $user->setPreferredEmail( strtolower( $attributes['contact/email'] ) );
-        $username = isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] )
-                    ?
-                        ( isset( $attributes['namePerson/first'] ) ? $attributes['namePerson/first'] : '' )
-                      . (
-                            isset( $attributes['namePerson/last'] )
-                            ? ( isset( $attributes['namePerson/first'] ) ? ' ' : '' ) . $attributes['namePerson/last']
-                            : ''
-                        )
-                    : $this->createUsernameFromEmail( $attributes['contact/email'] );
-        $user->setUsername( $username );
+        $username = isset( $attributes['namePerson'] )
+                    ? $attributes['namePerson'] // Yahoo
+                    : ( isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] ) // Google
+                        ?
+                            ( isset( $attributes['namePerson/first'] ) ? $attributes['namePerson/first'] : '' )
+                          . (
+                                isset( $attributes['namePerson/last'] )
+                                ? ( isset( $attributes['namePerson/first'] ) ? ' ' : '' ) . $attributes['namePerson/last']
+                                : ''
+                            )
+                        : ( $user->getEmail() ? $this->createUsernameFromEmail( $user->getEmail() ) : 'User' ) );
         return $user;
     }
     
@@ -177,7 +177,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
     }
 
     /**
-     * Find a user by its username.
+     * Find a user by their username.
      *
      * @param string $username
      *
@@ -189,7 +189,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
     }
 
     /**
-     * Finds a user by its email.
+     * Finds a user by their email.
      *
      * @param string $email
      *
@@ -201,7 +201,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
     }
 
     /**
-     * Finds a user by its username or email.
+     * Finds a user by their username or email.
      *
      * @param string $usernameOrEmail
      *
@@ -212,6 +212,20 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
         return false !== strpos( $usernameOrEmail, '@' )
                 ? $this->findUserByEmail( $usernameOrEmail )
                 : $this->findUserByUsername( $usernameOrEmail );
+    }
+
+    /**
+     * Finds a user by their ID or slug.
+     *
+     * @param string $IdOrSlug
+     *
+     * @return UserInterface or null if user does not exist
+     */
+    public function findUserByIdOrSlug( $IdOrSlug )
+    {
+        return is_numeric( $IdOrSlug )
+                ? $this->findUserBy( array( 'id' => $IdOrSlug ) )
+                : $this->findUserBy( array( 'slug' => $IdOrSlug ) );
     }
 
     /**

@@ -14,9 +14,9 @@ class ProfileController extends ContainerAware
      */
     public function listAction()
     {
-        $users = $this->container->get( 'doctrine' )->getRepository( 'WGOpenIdUserBundle:User' )->findAll();
+        $users = $this->container->get( 'wg.openid.user_manager' )->findUsers();
         return $this->container->get('templating')->renderResponse(
-            'WGOpenIdUserBundle:User:list.html.twig', array(
+            'WGOpenIdUserBundle:Profile:list.html.twig', array(
                 'users' => $users,
         ));
     }
@@ -27,11 +27,8 @@ class ProfileController extends ContainerAware
     public function showAction()
     {
         $request = $this->container->get( 'request' );
-        $repository = $this->container->get( 'doctrine' )->getRepository( 'WGOpenIdUserBundle:User' );
-        $handle = $request->get( 'handle' );
-        $user = is_numeric( $handle )
-                ? $repository->find( $handle )
-                : $repository->findOneBy( array( 'slug' => $handle ) );
+        $user = $this->container->get( 'wg.openid.user_manager' )
+                                ->findUserByIdOrSlug( $request->get( 'handle' ) );
         if ( !$user ) throw new NotFoundHttpException( "Page not found" );
         $currentUser = $this->container->get( 'security.context' )->getToken()->getUser();
         return $this->container->get( 'templating' )

@@ -39,9 +39,9 @@ class User implements UserInterface, GroupableInterface
     protected $email;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string",name="requested_email")
      */
-    protected $preferredEmail;
+    protected $requestedEmail;
     
     /**
      * @ORM\Column(type="array")
@@ -573,26 +573,26 @@ class User implements UserInterface, GroupableInterface
     }
 
     /**
-     * Set preferredEmail
+     * Set requestedEmail
      *
-     * @param string $preferredEmail
+     * @param string $requestedEmail
      * @return User
      */
-    public function setPreferredEmail($preferredEmail)
+    public function setRequestedEmail( $requestedEmail )
     {
-        $this->preferredEmail = $preferredEmail;
+        $this->requestedEmail = $requestedEmail;
     
         return $this;
     }
 
     /**
-     * Get preferredEmail
+     * Get requestedEmail
      *
      * @return string 
      */
-    public function getPreferredEmail()
+    public function getRequestedEmail()
     {
-        return $this->preferredEmail;
+        return $this->requestedEmail;
     }
 
     /**
