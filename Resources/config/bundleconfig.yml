@@ -1,0 +1,13 @@
+wg_open_id_user:
+    db_driver: %wg_openid.db_driver%
+fos_user:
+    db_driver: %wg_openid.db_driver%
+    firewall_name: %wg_openid.firewall_name%
+    user_class: %wg_openid.user_class%
+    group:
+        group_class: %wg_openid.group_class%
+    service:
+        user_manager: wg.openid.user_manager.identity
+fp_open_id:
+    db_driver: %wg_openid.db_driver%
+    identity_class: %wg_openid.identity_class%

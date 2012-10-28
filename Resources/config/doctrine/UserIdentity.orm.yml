@@ -1,0 +1,22 @@
+WG\OpenIdUserBundle\Entity\UserIdentity:
+    type: entity
+    manyToOne:
+        user:
+            targetEntity: User
+            inversedBy: identities
+            joinColumn:
+                name: user_id
+                referencedColumnName: id
+    fields:
+        updatedAt:
+            name: updated_at
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: update
+        createdAt:
+            name: created_at
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create

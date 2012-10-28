@@ -1,0 +1,23 @@
+WG\OpenIdUserBundle\Entity\Group:
+    type: entity
+    fields:
+        slug:
+            type: string
+            length: 128
+            unique: true
+            gedmo:
+                slug:
+                    fields:
+                        - name
+        updatedAt:
+            name: updated_at
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: update
+        createdAt:
+            name: created_at
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create

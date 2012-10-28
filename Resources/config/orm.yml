@@ -1,0 +1,7 @@
+services:
+    wg.openid.user_manager.identity:
+        class:  WG\OpenIdUserBundle\Model\UserManager
+        arguments:
+            - '@fp_openid.identity_manager'
+            - '@fos_user.entity_manager'
+            - %fos_user.model.user.class%

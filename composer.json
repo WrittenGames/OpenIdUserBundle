@@ -16,7 +16,7 @@
         "fp/openid-bundle": "dev-master"
     },
     "suggest": {
-        "doctrine/mongodb-odm-bundle": "3.0.*"
+        "doctrine/mongodb-odm-bundle": "*"
     },
     "autoload": {
         "psr-0": { "WG\\OpenIdUserBundle": "" }

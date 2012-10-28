@@ -3,9 +3,9 @@ Getting Started With WGOpenIdUserBundle
 
 ## Prerequisites
 
-This version of the bundle requires Symfony 2.1.
+This version of the bundle requires Symfony 2.1 or higher.
 
-## Installation
+## Installation (TODO: instructions need adapting after making it storage agnostic)
 
 Installation is a reasonably quick 6 step process:
 
@@ -101,33 +101,26 @@ security:
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 ```
 
-### Step 4: Import FOSUserBundle and FpOpenIdBundle default configuration
+### Step 4: Configuration
 
 Now that you have properly configured your application's `security.yml` to work
-with the WGOpenIdUserBundle, the next step is to tell it the bundle's default
-configuration of the FOSUserBundle and the FpOpenIdBundle.
-
-Add the following import directive to your `config.yml`:
+with the WGOpenIdUserBundle, the next step is to configure it. The WGOpenIdUserBundle
+configures its dependencies in a YAML file using parameters, so add the following
+to your `config.yml`:
 
 ``` yaml
 # app/config/config.yml
 
 imports:
-    - { resource: "@WGOpenIdUserBundle/Resources/config/config.yml" }
+    - { resource: "@WGOpenIdUserBundle/Resources/config/bundleconfig.yml" }
+
+parameters:
+    wg_openid.firewall_name: main
+    wg_openid.db_driver: orm
+    wg_openid.identity_class: WrittenGames\UserBundle\Entity\Identity
+    wg_openid.user_class: WrittenGames\UserBundle\Entity\User
+    wg_openid.group_class: WrittenGames\UserBundle\Entity\Group
 ```
-
-One of the ugly little things left over from quickly whipping this up, you have
-to add the following bit in order to tell the FOSUserBundle what your firewall
-is called:
-
-``` yaml
-# app/config/config.yml
-
-fos_user:
-    firewall_name: main
-```
-
-Or don't, and configure those two bundles yourself.
 
 ### Step 5: Import routing files
 

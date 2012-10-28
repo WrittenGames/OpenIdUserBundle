@@ -1,6 +1,6 @@
 <?php
 
-namespace WG\OpenIdUserBundle\Entity;
+namespace WG\OpenIdUserBundle\Document;
 
 use WG\OpenIdUserBundle\Model\Group as AbstractGroup;
 

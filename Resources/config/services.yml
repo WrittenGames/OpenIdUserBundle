@@ -1,13 +1,7 @@
 parameters:
-    wg.openid.user_manager.class:                     WG\OpenIdUserBundle\Model\UserManager
     wg.openid.authentication_success_listener.class:  WG\OpenIdUserBundle\Listener\AuthenticatedEventListener
 
 services:
-    wg.openid.user_manager:
-        class:  %wg.openid.user_manager.class%
-        arguments:
-            - '@fp_openid.identity_manager'
-            - '@doctrine.orm.entity_manager'
     wg.openid.authentication_success_listener:
         class:  %wg.openid.authentication_success_listener.class%
         arguments:

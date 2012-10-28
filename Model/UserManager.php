@@ -2,10 +2,9 @@
 
 namespace WG\OpenIdUserBundle\Model;
 
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -17,25 +16,26 @@ use Fp\OpenIdBundle\Model\IdentityManagerInterface;
 use Fp\OpenIdBundle\Model\IdentityInterface;
 use Fp\OpenIdBundle\Model\UserIdentityInterface;
 
-use WG\OpenIdUserBundle\Entity\User;
-use WG\OpenIdUserBundle\Entity\UserIdentity;
-
-class UserManager implements FpUserManagerInterface, FosUserManagerInterface
+class UserManager implements UserProviderInterface, FpUserManagerInterface, FosUserManagerInterface
 {
     /**
      * @var \Fp\OpenIdBundle\Model\IdentityManagerInterface
      */
     protected $identityManager;
     protected $objectManager;
+    protected $class;
+    protected $repository;
 
     /**
      * @param IdentityManagerInterface $identityManager
      * @param ObjectManager $objectManager
      */
-    public function __construct( IdentityManagerInterface $identityManager, ObjectManager $objectManager )
+    public function __construct( IdentityManagerInterface $identityManager, ObjectManager $objectManager, $class )
     {
         $this->identityManager = $identityManager;
         $this->objectManager = $objectManager;
+        $this->repository = $objectManager->getRepository( $class );
+        $this->class = $objectManager->getClassMetadata( $class )->getName();
     }
 
     /**
@@ -43,7 +43,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function loadUserByUsername( $username )
     {
-        return $this->loadUserByIdentity( $username );
+        return $this->loadUserByIdentity( $username ); // ?! (needs looked at)
     }
 
     /**
@@ -84,7 +84,8 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function supportsClass( $class )
     {
-        return $class instanceof User;
+        $supportedClass = $this->getClass();
+        return $class instanceof $supportedClass;
     }
 
     /**
@@ -99,7 +100,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
         $user->setLastLogin( $time );
         $this->objectManager->persist( $user ); // Are we supposed to do that here? o.O
         $this->objectManager->flush();
-        $identityModel = new UserIdentity();
+        $identityModel = $this->identityManager->create();
         $identityModel->setIdentity( $identity );
         $identityModel->setUser( $user );
         $identityModel->setAttributes( $attributes );
@@ -115,7 +116,9 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function createUser()
     {
-        return new User();
+        $class = $this->getClass();
+        $user = new $class;
+        return $user;
     }
     
     /**
@@ -129,19 +132,18 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
         if ( isset( $attributes['contact/email'] ) )
         {
             $user->setEmail( strtolower( $attributes['contact/email'] ) );
-            $user->setRequestedEmail( strtolower( $attributes['contact/email'] ) );
         }
-        $username = isset( $attributes['namePerson'] )
-                    ? $attributes['namePerson'] // Yahoo
-                    : ( isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] ) // Google
+        $username = isset( $attributes['namePerson'] ) // Yahoo
+                    ?:(
+                        isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] ) // Google
                         ?
-                            ( isset( $attributes['namePerson/first'] ) ? $attributes['namePerson/first'] : '' )
-                          . (
-                                isset( $attributes['namePerson/last'] )
-                                ? ( isset( $attributes['namePerson/first'] ) ? ' ' : '' ) . $attributes['namePerson/last']
-                                : ''
-                            )
-                        : ( $user->getEmail() ? $this->createUsernameFromEmail( $user->getEmail() ) : 'User' ) );
+                            ( isset( $attributes['namePerson/first'] ) ?:'' )
+                            . ( isset( $attributes['namePerson/last'] )
+                                ? ( isset( $attributes['namePerson/first'] ) ? ' ':'' ) . $attributes['namePerson/last']
+                                :'' )
+                        :( $user->getEmail() ? $this->createUsernameFromEmail( $user->getEmail() ) :'User' ) 
+                    );
+        $user->setUsername( $username );
         return $user;
     }
     
@@ -171,9 +173,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUserBy( array $criteria )
     {
-        return $this->objectManager
-                    ->getRepository( 'WGOpenIdUserBundle:User' )
-                    ->findOneBy( $criteria );
+        return $this->repository->findOneBy( $criteria );
     }
 
     /**
@@ -235,7 +235,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
      */
     public function findUsers()
     {
-        return $this->objectManager->getRepository( 'WGOpenIdUserBundle:User' )->findAll();
+        return $this->repository->findAll();
     }
 
     /**
