@@ -78,6 +78,8 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function __construct()
     {
+        $this->groups = new ArrayCollection();
+        $this->identities = new ArrayCollection();
         $this->enabled = false;
         $this->locked = false;
         $this->roles = array();
