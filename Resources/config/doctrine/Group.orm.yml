@@ -1,5 +1,5 @@
 WG\OpenIdUserBundle\Entity\Group:
-    type: entity
+    type: mappedSuperclass
     fields:
         slug:
             type: string

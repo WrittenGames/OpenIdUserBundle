@@ -16,6 +16,16 @@ abstract class UserIdentity extends FpUserIdentity
     protected $user;
 
     /**
+     * @var datetime
+     */
+    protected $updatedAt;
+
+    /**
+     * @var datetime
+     */
+    protected $createdAt;
+
+    /**
      * Set user
      *
      * @param WG\OpenIdUserBundle\Entity\User $user

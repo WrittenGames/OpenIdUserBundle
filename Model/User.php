@@ -55,13 +55,11 @@ abstract class User implements UserInterface, GroupableInterface
     
     /**
      * @var \DateTime
-     * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
     
     /**
      * @var \DateTime
-     * @Gedmo\Timestampable(on="create")
      */
     protected $createdAt;
 

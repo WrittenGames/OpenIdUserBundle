@@ -1,13 +1,5 @@
 WG\OpenIdUserBundle\Entity\User:
-    type: entity
-    id:
-        id:
-            type: integer
-            generator: { strategy: AUTO }
-    oneToMany:
-        identities:
-            targetEntity: UserIdentity
-            mappedBy: user
+    type: mappedSuperclass
     fields:
         username:
             type: string

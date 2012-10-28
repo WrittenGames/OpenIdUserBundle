@@ -17,10 +17,10 @@ abstract class Group extends FosGroup
     /**
      * @var datetime
      */
-    protected $updated;
+    protected $updatedAt;
 
     /**
      * @var datetime
      */
-    protected $created;
+    protected $createdAt;
 }
