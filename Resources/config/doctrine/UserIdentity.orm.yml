@@ -1,6 +1,11 @@
 WG\OpenIdUserBundle\Entity\UserIdentity:
     type: mappedSuperclass
     fields:
+        identity:
+            type: string
+            length: 255
+        attributes:
+            type: array
         updatedAt:
             name: updated_at
             type: datetime

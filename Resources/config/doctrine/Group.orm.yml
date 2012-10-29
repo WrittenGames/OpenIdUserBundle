@@ -1,6 +1,9 @@
 WG\OpenIdUserBundle\Entity\Group:
     type: mappedSuperclass
     fields:
+        name:
+            type: string
+            length: 128
         slug:
             type: string
             length: 128
@@ -9,6 +12,8 @@ WG\OpenIdUserBundle\Entity\Group:
                 slug:
                     fields:
                         - name
+        roles:
+            type: array
         updatedAt:
             name: updated_at
             type: datetime
