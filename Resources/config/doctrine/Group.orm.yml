@@ -15,13 +15,13 @@ WG\OpenIdUserBundle\Entity\Group:
         roles:
             type: array
         updatedAt:
-            name: updated_at
+            column: updated_at
             type: datetime
             gedmo:
                 timestampable:
                     on: update
         createdAt:
-            name: created_at
+            column: created_at
             type: datetime
             gedmo:
                 timestampable:
