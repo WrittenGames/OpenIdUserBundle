@@ -117,10 +117,14 @@ imports:
 parameters:
     wg_openid.firewall_name: main
     wg_openid.db_driver: orm
-    wg_openid.identity_class: WrittenGames\UserBundle\Entity\Identity
-    wg_openid.user_class: WrittenGames\UserBundle\Entity\User
-    wg_openid.group_class: WrittenGames\UserBundle\Entity\Group
+    wg_openid.identity_class: Acme\UserBundle\Entity\Identity
+    wg_openid.user_class: Acme\UserBundle\Entity\User
+    wg_openid.group_class: Acme\UserBundle\Entity\Group
 ```
+
+Please note that when extending the UserIdentity entity, the $user property must
+be mapped using fetch=EAGER mode, otherwise the User object will not be properly
+refreshed.
 
 ### Step 5: Import routing files
 

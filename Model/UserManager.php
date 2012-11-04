@@ -49,9 +49,7 @@ class UserManager implements UserProviderInterface, FpUserManagerInterface, FosU
     /**
      * @param string $identity
      *
-     * @throws \Symfony\Component\Security\Core\Exception\UsernameNotFoundException if identity not found.
-     * @throws \Symfony\Component\Security\Core\Exception\UsernameNotFoundException if identity does not implement UserIdentityInterface.
-     * @throws \Symfony\Component\Security\Core\Exception\UsernameNotFoundException if user identity does not a user instance set.
+     * @throws \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
      *
      * @return UserInterface
      */
@@ -67,7 +65,6 @@ class UserManager implements UserProviderInterface, FpUserManagerInterface, FosU
         if ( false == $identityModel->getUser() instanceof UserInterface ) {
             throw new UsernameNotFoundException( 'UserIdentity must have a user to be set previously.' );
         }
-
         return $identityModel->getUser();
     }
 
@@ -133,16 +130,17 @@ class UserManager implements UserProviderInterface, FpUserManagerInterface, FosU
         {
             $user->setEmail( strtolower( $attributes['contact/email'] ) );
         }
-        $username = isset( $attributes['namePerson'] ) // Yahoo
-                    ?:(
-                        isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] ) // Google
+        $username = isset( $attributes['namePerson'] )
+                    ? $attributes['namePerson'] // Yahoo
+                    : ( isset( $attributes['namePerson/first'] ) || isset( $attributes['namePerson/last'] ) // Google
                         ?
-                            ( isset( $attributes['namePerson/first'] ) ?:'' )
-                            . ( isset( $attributes['namePerson/last'] )
-                                ? ( isset( $attributes['namePerson/first'] ) ? ' ':'' ) . $attributes['namePerson/last']
-                                :'' )
-                        :( $user->getEmail() ? $this->createUsernameFromEmail( $user->getEmail() ) :'User' ) 
-                    );
+                            ( isset( $attributes['namePerson/first'] ) ? $attributes['namePerson/first'] : '' )
+                          . (
+                                isset( $attributes['namePerson/last'] )
+                                ? ( isset( $attributes['namePerson/first'] ) ? ' ' : '' ) . $attributes['namePerson/last']
+                                : ''
+                            )
+                        : ( $user->getEmail() ? $this->createUsernameFromEmail( $user->getEmail() ) : 'User' ) );
         $user->setUsername( $username );
         return $user;
     }
@@ -265,7 +263,7 @@ class UserManager implements UserProviderInterface, FpUserManagerInterface, FosU
      */
     public function getClass()
     {
-        // TODO
+        return $this->class;
     }
 
     /**

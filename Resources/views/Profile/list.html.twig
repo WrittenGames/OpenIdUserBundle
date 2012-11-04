@@ -8,7 +8,7 @@
 {% for user in users %}
 <div class="">
     {{ user.username }} ({{ user.email }})
-    [<a href="{{ fullUrl( path( 'wg_openiduser_profile_show', { 'handle': user.slug } ), false ) }}">view</a>]
+    [<a href="{{ path( 'wg_openiduser_profile_show', { 'handle': user.slug } ) }}">view</a>]
 </div>
 {% endfor %}
 

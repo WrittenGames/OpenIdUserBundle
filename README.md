@@ -41,7 +41,7 @@ All the installation instructions are located in the [documentation](https://git
 License
 -------
 
-This bundle is under the MIT license.
+This bundle is released under the MIT license.
 
 About
 -----

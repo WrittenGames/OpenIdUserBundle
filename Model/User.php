@@ -6,6 +6,7 @@ use Fp\OpenIdBundle\Model\UserIdentityInterface;
 use FOS\UserBundle\Model\GroupInterface;
 use FOS\UserBundle\Model\GroupableInterface;
 use FOS\UserBundle\Model\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Storage agnostic user object
@@ -442,10 +443,9 @@ abstract class User implements UserInterface, GroupableInterface
      */
     public function unserialize($serialized)
     {
-        $data = unserialize($serialized);
         // add a few extra elements in the array to ensure that we have enough keys when unserializing
         // older data which does not include all properties.
-        $data = array_merge($data, array_fill(0, 2, null));
+        $data = array_merge(unserialize($serialized), array_fill(0, 2, null));
 
         list(
             $this->id,
@@ -456,7 +456,7 @@ abstract class User implements UserInterface, GroupableInterface
             $this->roles
         ) = $data;
     }
-    
+
     /**
      * Checks whether the user's account has expired.
      *

@@ -19,6 +19,7 @@ WG\OpenIdUserBundle\Entity\User:
             column: requested_email
             type: string
             length: 255
+            nullable: true
         roles:
             type: array
         enabled:
