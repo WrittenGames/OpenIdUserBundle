@@ -236,7 +236,7 @@ class User implements UserInterface, GroupableInterface
      *
      * @param \DateTime $time
      */
-    public function setLastLogin( \DateTime $time )
+    public function setLastLogin( \DateTime $time = NULL )
     {
         $this->lastLogin = $time;
     }
