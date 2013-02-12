@@ -12,3 +12,11 @@ fos_user:
 fp_open_id:
     db_driver: orm
     identity_class: WG\OpenIdUserBundle\Entity\UserIdentity
+
+# Stof/Gedmo Doctrine Extensions config
+stof_doctrine_extensions:
+    orm:
+        default:
+            timestampable: true
+            sluggable: true
+            sortable: true

@@ -107,7 +107,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
         $this->objectManager->flush();
         return $user;
     }
-    
+
     /**
      * Creates an empty user instance.
      *
@@ -117,7 +117,7 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
     {
         return new User();
     }
-    
+
     /**
      * Creates a user instance from provided attributes.
      *
@@ -142,9 +142,10 @@ class UserManager implements FpUserManagerInterface, FosUserManagerInterface
                                 : ''
                             )
                         : ( $user->getEmail() ? $this->createUsernameFromEmail( $user->getEmail() ) : 'User' ) );
+        $user->setUsername( $username );
         return $user;
     }
-    
+
     protected function createUsernameFromEmail( $str )
     {
         $pos = strpos( $str, '@' );

@@ -3,7 +3,7 @@ Getting Started With WGOpenIdUserBundle
 
 ## Prerequisites
 
-This version of the bundle requires Symfony 2.1.
+This version of the bundle requires Symfony 2.2.
 
 ## Installation
 
@@ -12,7 +12,7 @@ Installation is a reasonably quick 6 step process:
 1. Download WGOpenIdUserBundle and its dependencies using composer
 2. Enable the bundle
 3. Configure your application's security.yml
-4. Import FOSUserBundle and FpOpenIdBundle default configuration
+4. Import default configuration for FOSUserBundle, FpOpenIdBundle and StofDoctrineExtensionsBundle
 5. Import routing files
 6. Update your database schema
 
@@ -35,7 +35,7 @@ $ php composer.phar update writtengames/openid-user-bundle
 ```
 
 Composer will install the bundle(s) to your project's `vendor` directory, along
-with the FOSUserBundle and/or the FpOpenIdBundle if required.
+with its dependencies.
 
 ### Step 2: Enable the bundle
 
@@ -49,11 +49,12 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        // enable the bundle itself
-        new WG\OpenIdUserBundle\WGOpenIdUserBundle(),
         // enabled its dependencies if not already done
         new FOS\UserBundle\FOSUserBundle(),
         new Fp\OpenIdBundle\FpOpenIdBundle(),
+        new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+        // enable the bundle itself
+        new WG\OpenIdUserBundle\WGOpenIdUserBundle(),
     );
 }
 ```
@@ -128,6 +129,10 @@ fos_user:
 ```
 
 Or don't, and configure those two bundles yourself.
+
+In a future version I will likely replace this with a proper auto-configuration
+or at least a bunch of parameters so you have control over it without having to
+overwrite everything.
 
 ### Step 5: Import routing files
 
