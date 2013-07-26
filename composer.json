@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "stof/doctrine-extensions-bundle": "dev-master",
+        "stof/doctrine-extensions-bundle": "1.1.*",
         "friendsofsymfony/user-bundle": "*",
         "fp/openid-bundle": "dev-master"
     },
