@@ -13,7 +13,7 @@
     "require": {
         "stof/doctrine-extensions-bundle": "1.1.*",
         "friendsofsymfony/user-bundle": "*",
-        "fp/openid-bundle": "dev-master"
+        "fp/openid-bundle": "2.2.*"
     },
     "autoload": {
         "psr-0": { "WG\\OpenIdUserBundle": "" }
